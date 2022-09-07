@@ -175,13 +175,12 @@
         push: true
         source: local
 
-- name: Deploy to minikube
-  hosts: localhost
-  connection: local
+- name: Deploying to Minikube
+  hosts: all
   gather_facts: false
   become: true
   tags:
-    - helm
+    - deploy
   tasks:
     - name: Creating working directory
       ansible.builtin.file:
