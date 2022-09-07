@@ -38,4 +38,4 @@ Ansible installed
 ansible-playbook pizza.yml
 ```
 
-**Windows users please note:** Due to file system differences, the `/vagrant` directory inside the VM, while convenient, does not have permissions suitable for Ansible. To avoid errors, simply clone this repo again, e.g. from `/home/vagrant`, cd into the project, then run `ansible-playbook pizza.yml`.
+**Windows users please note:** The `/vagrant` directory inside the VM, while convenient, does not have permissions suitable for Ansible. To avoid errors, simply clone this repo again, e.g. from `/home/vagrant`, cd into the project, then run `ansible-playbook pizza.yml`.
