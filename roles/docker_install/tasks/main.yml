@@ -37,9 +37,9 @@
       - containerd.io
     state: present
 
-- name: Adding vagrant user to the docker group
+- name: Adding target_user to the docker group
   ansible.builtin.user:
-    name: vagrant
+    name: '{{ target_user }}'
     groups: docker
     append: true
   notify:
