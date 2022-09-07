@@ -72,16 +72,6 @@
         tag: latest
       become: true
 
-    - name: Building Docker image
-      community.docker.docker_image:
-        build:
-          path: '{{ project_base }}//pizza-express'
-          pull: true
-        source: build
-        name: pizza-express
-        tag: latest
-      become: true
-
     - name: Creating test docker-compose.yml
       ansible.builtin.copy:
         content: |
