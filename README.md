@@ -1,6 +1,6 @@
 # noname-homework
 
-As requested, please find in this repo:
+This repo contains:
 
 * An Ansible playbook - `pizza.yml` and associated file and directories
   * ansible.cfg
