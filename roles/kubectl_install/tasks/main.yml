@@ -1,0 +1,42 @@
+# file: roles/kubectl_install/tasks/main.yml
+---
+# Install kubectl
+#    apt-get install -y ca-certificates curl
+#    apt-get install -y apt-transport-https
+#    curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+#    apt-get update
+#    apt-get install -y kubectl
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+    state: present
+
+- name: Downloading packages.cloud.goodle.com apt gpg keyring
+  ansible.builtin.get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Creating  kubernetes apt list entry
+  ansible.builtin.shell: |
+    set -o pipefail
+    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | \
+    sudo tee /etc/apt/sources.list.d/kubernetes.list
+  args:
+    executable: /bin/bash
+    warn: false
+    creates: /etc/apt/sources.list.d/kubernetes.list
+
+- name: Installing kubectl
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+    update_cache: true
+...
