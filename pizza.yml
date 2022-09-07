@@ -196,7 +196,7 @@
     - name: Copying Helm charts
       ansible.builtin.copy:
         src: helm-charts
-        dest: /opt/pizza-express/helm-charts
+        dest: /opt/pizza-express/pizza
         owner: '{{ target_user }}'
         group: '{{ target_group }}'
 
