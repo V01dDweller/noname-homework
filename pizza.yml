@@ -124,7 +124,7 @@
       ansible.builtin.debug:
         var: test_status
 
-    - name: Checking pizze-express service
+    - name: Checking pizza-express service
       ansible.builtin.uri:
         url: http://localhost:8081
         method: GET
