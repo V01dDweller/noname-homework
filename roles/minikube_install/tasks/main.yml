@@ -28,4 +28,21 @@
   ansible.builtin.file:
     path: /tmp/minikube-linux-amd64
     state: absent
+
+- name: Starting minikube cluster
+  ansible.builtin.shell: |
+    set -o pipefail
+    minikube start
+    minikube addons enable ingress
+    minikube addons list
+  args:
+    executable: /bin/bash
+    warn: false
+  register: minikube_startup
+
+- name: Displaing minikube startup
+  ansible.builtin.debug:
+    var: minikube_startup.stdout
+  become: true
+  become_user: '{{ target_user }}'
 ...
