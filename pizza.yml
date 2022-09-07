@@ -109,6 +109,7 @@
     - name: Starting test containers
       community.docker.docker_compose:
         project_src: '{{ project_base }}/pizza-express'
+      become: true
       register: test_status
 
     - name: Displaying startup
@@ -130,6 +131,7 @@
       community.docker.docker_compose:
         project_src: '{{ project_base }}/pizza-express'
         state: absent
+      become: true
 
     - name: Cleaning up docker-compose.test.yml
       ansible.builtin.file:
