@@ -38,7 +38,7 @@ Ansible installed
 ansible-playbook pizza.yml
 ```
 
-**Windows users please note:** The project directory is mount inside the
+**Windows users please note:** The project directory is mounted inside the
 virtual machine as ,`/vagrant`. While it can be conventient, convenient, it
 does not have the Linux mode or permissions suitable for Ansible. To avoid
 errors, clone this repo again, e.g. from within `/home/vagrant`, cd into the
