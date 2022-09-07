@@ -36,7 +36,7 @@
       ansible.builtin.git:
         repo: https://github.com/V01dDweller/pizza-express.git
         version: master
-        dest: '{{ project_base }}//pizza-express'
+        dest: '{{ project_base }}/pizza-express'
 
     - name: Creating temporary redis container
       community.docker.docker_container:
