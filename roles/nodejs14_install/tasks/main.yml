@@ -22,7 +22,7 @@
 - name: Cleaning up nodesource_setup.sh
   ansible.builtin.file:
     path: files/nodesource_setup.sh
-    state: abesent
+    state: absent
   delegate_to: localhost
   become: false
 ...
