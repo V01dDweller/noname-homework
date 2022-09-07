@@ -1,0 +1,194 @@
+# file: pizza.yml
+---
+- name: Installing tools
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - role: docker_install
+      tags:
+        - docker
+
+    - role: nodejs14_install
+      tags:
+        - node
+        - nodejs
+
+- name: Testing pizza-express
+  hosts: all
+  gather_facts: false
+  become: false
+  vars:
+    project_base: /home/vagrant
+  tags:
+    - test
+    - testing
+  tasks:
+    - name: Cloning the pizza-express git repo
+      ansible.builtin.git:
+        repo: https://github.com/V01dDweller/pizza-express.git
+        version: master
+        dest: '{{ project_base }}//pizza-express'
+
+    - name: Creating temporary redis container
+      community.docker.docker_container:
+        name: redis
+        image: redis:latest
+        ports:
+          - '6379:6379'
+      become: true
+
+    - name: Installing npm packages
+      community.general.npm:
+        path: '{{ project_base }}//pizza-express'
+
+    - name: Running unit tests
+      ansible.builtin.shell: |
+        set -o pipefail
+        npm test
+      args:
+        executable: /bin/bash
+        chdir: '{{ project_base }}//pizza-express/test'
+      changed_when: false
+      register: test_output_raw
+
+    - name: Displaying test results
+      ansible.builtin.debug:
+        var: test_output_raw.stdout_lines
+
+    - name: Removing redis container
+      ansible.builtin.docker_container:
+        name: redis
+        state: absent
+      become: true
+
+    - name: Building Docker image
+      community.docker.docker_image:
+        build:
+          path: '{{ project_base }}//pizza-express'
+          pull: true
+        source: build
+        name: pizza-express
+        tag: latest
+      become: true
+
+    - name: Building Docker image
+      community.docker.docker_image:
+        build:
+          path: '{{ project_base }}//pizza-express'
+          pull: true
+        source: build
+        name: pizza-express
+        tag: latest
+      become: true
+
+    - name: Creating test docker-compose.yml
+      ansible.builtin.copy:
+        content: |
+          version: '3'
+          services:
+            pizza-redis:
+              image: redis:latest
+              container_name: redis
+              ports:
+                - 6379:6379
+              environment:
+                - TZ=America/New_York
+              restart: always
+            pizza-express:
+              image: pizza-express:latest
+              container_name: test-pizza
+              environment:
+                - TZ=America/New_York
+                - REDIS=pizza-redis
+              ports:
+                - 8081:3000
+              healthcheck:
+                test: ["CMD-SHELL", "curl http://localhost:3000"]
+                interval: 10s
+                timeout: 5s
+                retries: 5
+              depends_on:
+                - pizza-redis
+              restart: always
+        dest: '{{ project_base }}//pizza-express/docker-compose.test.yml'
+        owner: '{{ target_user }}'
+        group: '{{ target_group }}'
+        mode: 0644
+
+    - name: Starting test containers
+      community.docker.docker_compose:
+        project_src: '{{ project_base }}/pizza-express'
+      register: test_status
+
+    - name: Displaying startup
+      ansible.builtin.debug:
+        var: test_status
+
+    - name: Checking pizze-express service
+      ansible.builtin.uri:
+        url: http://localhost:8081
+        method: GET
+      register: curl_check
+      failed_when: curl_check.status != 200
+
+    - name: Displaying response
+      ansible.builtin.debug:
+        var: curl_check.status
+
+    - name: Tearing down test containers
+      community.docker.docker_compose:
+        project_src: '{{ project_base }}/pizza-express'
+        state: absent
+
+    - name: Cleaning up docker-compose.test.yml
+      ansible.builtin.file:
+        path: '{{ project_base }}/pizza-express/docker-compose.test.yml'
+        state: absent
+
+- name: Tag and push docker image
+  hosts: all
+  gather_facts: false
+  become: false
+  tags:
+    - dockerhub
+  vars:
+    docker_user: v01ddweller
+    noname_docker_secret: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          64333834666263373933396666323234633134616630396565336538663538353437366365633734
+          3537623633366566643761626262353763303030613265370a636634373862303362663439353633
+          34373533623034623066303239616634353135353435313830623865623330616161613066623363
+          6165303261323732330a333963336361663530373539643963303937333137616631373230326333
+          61666337373963616237653264373733613234303733393264613637666232303233316562356533
+          3530373563663964636562653334396563323464306265333939
+  tasks:
+    - name: Logging into hub.docker.io
+      community.docker.docker_login:
+        username: '{{ docker_user }}'
+        password: '{{ noname_docker_secret }}'
+
+    - name: Pushing image to hub.docker.io/v01ddweller
+      community.docker.docker_image:
+        name: pizza-express:latest
+        repository: v01ddweller/pizza:latest
+        push: true
+        source: local
+
+- name: Deploy to minikube
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  become: true
+  tags:
+    - helm
+  tasks:
+    - name: Creating working directory
+      ansible.builtin.file:
+        path: /opt/pizza-express
+        state: directory
+        owner: '{{ target_user }}'
+        group: '{{ target_group }}'
+        mode: 0755
+...
+# vim: set ft=yaml.ansible:

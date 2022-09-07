@@ -1,0 +1,47 @@
+# file: roles/docker_install/tasks/main.yml
+---
+- name: Gathering facts
+  ansible.builtin.setup:
+    gather_subset: min
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - software-properties-common
+    state: present
+
+- name: Addming GPG key for Docker apt repo
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Adding Docker apt repo
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Updating apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Docker CE
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - docker-compose
+      - containerd.io
+    state: present
+
+- name: Adding vagrant user to the docker group
+  ansible.builtin.user:
+    name: vagrant
+    groups: docker
+    append: true
+  notify:
+    - Restart Docker
+...

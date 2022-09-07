@@ -1,0 +1,28 @@
+# file: roles/nodejs14_install/tasks/main.yml
+---
+- name: Downloading NodeJS 14 repo script
+  ansible.builtin.get_url:
+    url: https://deb.nodesource.com/setup_14.x
+    dest: files/nodesource_setup.sh
+    owner: vagrant
+    group: vagrant
+    mode: 0644
+  become: false
+
+- name: Installing nodesource apt repo
+  ansible.builtin.script: nodesource_setup.sh
+  args:
+    creates: /etc/apt/sources.list.d/nodesource.list
+
+- name: Installing NodeJS 14.20.0
+  ansible.builtin.package:
+    name: nodejs
+    state: present
+
+- name: Cleaning up nodesource_setup.sh
+  ansible.builtin.file:
+    path: files/nodesource_setup.sh
+    state: abesent
+  delegate_to: localhost
+  become: false
+...
