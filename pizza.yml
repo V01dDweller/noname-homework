@@ -141,10 +141,13 @@
         state: absent
       become: true
 
-    - name: Cleaning up docker-compose.test.yml
+    - name: Cleaning up
       ansible.builtin.file:
-        path: '{{ project_base }}/pizza-express/docker-compose.test.yml'
+        path: '{{ item }}'
         state: absent
+      loop:
+        - '{{ project_base }}/pizza-express'
+        - '{{ project_base }}/pizza-express/docker-compose.test.yml'
 
 - name: Tag and push docker image
   hosts: all
