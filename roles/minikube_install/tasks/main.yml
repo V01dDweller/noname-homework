@@ -1,0 +1,32 @@
+# file: roles/minikube_install/tasks/main.yml
+---
+- name: Checking for existing minikube
+  ansible.builtin.stat:
+    path: /usr/local/bin/minikube
+  register: minikube_check
+
+- block:
+    - name: Downloading minikube-linux-amd64
+      ansible.builtin.get_url:
+        url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        dest: /tmp/minikube-linux-amd64
+        owner: '{{ target_user }}'
+        group: '{{ target_group }}'
+        mode: 0644
+
+    - name: Installing Minikube
+      ansible.builtin.shell: |
+        set -o pipefail
+        install /tmp/minikube-linux-amd64 /usr/local/bin/minikube
+      args:
+        executable: /bin/bash
+        warn: false
+        creates: /usr/local/bin/minikube
+  when: not minikube_check.stat.exists
+
+- name: Cleaning up /tmp/minikube-linux-amd64
+  ansible.builtin.file:
+    path: /tmp/minikube-linux-amd64
+    state: absent
+
+...
