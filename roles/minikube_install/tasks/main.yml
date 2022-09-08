@@ -29,7 +29,7 @@
     path: /tmp/minikube-linux-amd64
     state: absent
 
-- name: Starting minikube cluster
+- name: Starting minikube cluster (this will take some time)
   ansible.builtin.shell: |
     set -o pipefail
     sudo -u vagrant minikube start
