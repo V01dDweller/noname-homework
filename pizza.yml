@@ -202,10 +202,9 @@
 
     - name: Copying Helm charts
       ansible.builtin.copy:
-        src: helm-charts
-        dest: /opt/pizza-express/pizza
+        src: pizza
+        dest: /opt/pizza-express/
         owner: '{{ target_user }}'
         group: '{{ target_group }}'
-
 ...
 # vim: set ft=yaml.ansible:
