@@ -22,31 +22,30 @@
         executable: /bin/bash
         warn: false
         creates: /usr/local/bin/minikube
+
+    - name: Cleaning up /tmp/minikube-linux-amd64
+      ansible.builtin.file:
+        path: /tmp/minikube-linux-amd64
+        state: absent
+
+    # Regarging the use of sudo below instead of the 'become' directive:
+    # Even though the target_user (e.g. vagrant) is added to the docker
+    # group as the playbook runs, that group membership will not be picked
+    # up until a new session is started. Thus, sudo is used as a workaround.
+    - name: Starting minikube cluster (this will take some time)
+      ansible.builtin.shell: |
+        set -o pipefail
+        sudo -u vagrant minikube start
+        sudo -u vagrant minikube addons enable ingress
+        sudo -u vagrant minikube addons list
+      args:
+        executable: /bin/bash
+        warn: false
+      become: false
+      register: minikube_startup
+
+    - name: Displaying minikube startup
+      ansible.builtin.debug:
+        var: minikube_startup.stdout
   when: not minikube_check.stat.exists
-
-- name: Cleaning up /tmp/minikube-linux-amd64
-  ansible.builtin.file:
-    path: /tmp/minikube-linux-amd64
-    state: absent
-
-# Regarging the use of sudo below instead of the 'become' directive:
-# Even though the target_user (e.g. vagrant) is added to the docker
-# group as the playbook runs, that group membership will not be picked
-# up until a new session is started. Thus, sudo is used as a workaround.
-- name: Starting minikube cluster (this will take some time)
-  ansible.builtin.shell: |
-    set -o pipefail
-    sudo -u vagrant minikube start
-    sudo -u vagrant minikube addons enable ingress
-    sudo -u vagrant minikube addons list
-  args:
-    executable: /bin/bash
-    warn: false
-    creates: /var/lib/docker/volumes/minikube
-  become: false
-  register: minikube_startup
-
-- name: Displaying minikube startup
-  ansible.builtin.debug:
-    var: minikube_startup.stdout
 ...
