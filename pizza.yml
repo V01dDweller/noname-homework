@@ -208,7 +208,7 @@
   post_tasks:
     - name: Pausing to allow ingress pod to start
       ansible.builtin.pause:
-        seconds: 10
+        seconds: 20
 
     - name: Deploying pizza-express to the cluster
       ansible.builtin.shell: |
