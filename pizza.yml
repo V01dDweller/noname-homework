@@ -184,7 +184,7 @@
   become: true
   tags:
     - deploy
-  tasks:
+  pre_tasks:
     - name: Creating working directory
       ansible.builtin.file:
         path: /opt/pizza-express
