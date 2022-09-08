@@ -23,10 +23,6 @@
       tags:
         - helm
 
-    - role: minikube_install
-      tags:
-        - minikube
-
 - name: Testing pizza-express
   hosts: all
   gather_facts: false
@@ -206,5 +202,10 @@
         dest: /opt/pizza-express/
         owner: '{{ target_user }}'
         group: '{{ target_group }}'
+
+  roles:
+    - role: minikube_install
+      tags:
+        - minikube
 ...
 # vim: set ft=yaml.ansible:
