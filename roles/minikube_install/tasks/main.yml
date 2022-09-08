@@ -32,9 +32,9 @@
 - name: Starting minikube cluster
   ansible.builtin.shell: |
     set -o pipefail
-    minikube start
-    minikube addons enable ingress
-    minikube addons list
+    sudo -u vagrant minikube start
+    sudo -u vagrant minikube addons enable ingress
+    sudo -u vagrant minikube addons list
   args:
     executable: /bin/bash
     warn: false
