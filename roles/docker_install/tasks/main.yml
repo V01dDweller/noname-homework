@@ -14,7 +14,7 @@
       - software-properties-common
     state: present
 
-- name: Addming GPG key for Docker apt repo
+- name: Adding GPG key for Docker apt repo
   ansible.builtin.apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
