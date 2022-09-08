@@ -218,6 +218,25 @@
     - name: Displaying deployment status
       ansible.builtin.debug:
         var: k8s_deploy.stdout
+
+    - name: Adding entry to /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: 192.168.49.2  pizza-express.info
+      tags: goober
+
+    - name: Running a final test
+      ansible.builtin.uri:
+        url: http://pizza-express.info
+        method: GET
+      delegate_to: localhost
+      register: app_output
+      tags: goober
+
+    - name: Displaying response
+      ansible.builtin.debug:
+        var: app_output
+      tags: goober
 ...
 
 # vim: set ft=yaml.ansible:
