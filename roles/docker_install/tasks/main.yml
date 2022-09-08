@@ -44,4 +44,7 @@
     append: true
   notify:
     - Restart Docker
+
+- name: Restarting Docker now
+  ansible.builtin.meta: flush_handlers
 ...
