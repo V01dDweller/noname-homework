@@ -29,6 +29,10 @@
     path: /tmp/minikube-linux-amd64
     state: absent
 
+# Regarging the use of sudo below instead of the 'become' directive:
+# Even though the target_user (e.g. vagrant) is added to the docker
+# group as the playbook runs, that group membership will not be picked
+# up until a new session is started. Thus, sudo is used as a workaround.
 - name: Starting minikube cluster (this will take some time)
   ansible.builtin.shell: |
     set -o pipefail
