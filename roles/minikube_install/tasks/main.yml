@@ -42,8 +42,6 @@
   args:
     executable: /bin/bash
     warn: false
-  become: true
-  become_user: '{{ target_user }}'
     creates: /var/lib/docker/volumes/minikube
   become: false
   register: minikube_startup
