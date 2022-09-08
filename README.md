@@ -32,10 +32,10 @@ cd noname-homework
 Ansible installed
 4. Once the virtual machine is provisioned, cd to `/vagrant`
 
-5. From there, run the ansible playbook:
+5. From there, run the ansible playbook (see me about the vault password):
 
 ```
-ansible-playbook pizza.yml
+ansible-playbook pizza.yml --ask-vault-pass
 ```
 
 **Windows users please note:** The project directory is mounted inside the
