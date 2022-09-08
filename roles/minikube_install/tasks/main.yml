@@ -38,11 +38,11 @@
   args:
     executable: /bin/bash
     warn: false
+  become: true
+  become_user: '{{ target_user }}'
   register: minikube_startup
 
 - name: Displaing minikube startup
   ansible.builtin.debug:
     var: minikube_startup.stdout
-  become: true
-  become_user: '{{ target_user }}'
 ...
