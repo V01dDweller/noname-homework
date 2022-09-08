@@ -175,6 +175,7 @@
       community.docker.docker_login:
         username: '{{ docker_user }}'
         password: '{{ noname_docker_secret }}'
+      become: true
 
     - name: Pushing image to hub.docker.io/v01ddweller
       community.docker.docker_image:
@@ -182,6 +183,7 @@
         repository: v01ddweller/pizza:latest
         push: true
         source: local
+      become: true
 
 - name: Deploying to Minikube
   hosts: all
