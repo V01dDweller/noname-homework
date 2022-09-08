@@ -110,7 +110,7 @@
               depends_on:
                 - pizza-redis
               restart: always
-        dest: '{{ project_base }}//pizza-express/docker-compose.test.yml'
+        dest: '{{ project_base }}//pizza-express/docker-compose.yml'
         owner: '{{ target_user }}'
         group: '{{ target_group }}'
         mode: 0644
