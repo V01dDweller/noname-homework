@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
 # Virtual machine specs - VirtualBox
   config.vm.provider "virtualbox" do |spec|
     spec.memory = 6144
-    spec.cpus = 2
+    spec.cpus = 4
   end
 
 # Run post_config script
