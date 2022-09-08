@@ -40,6 +40,7 @@
     warn: false
   become: true
   become_user: '{{ target_user }}'
+    creates: /var/lib/docker/volumes/minikube
   register: minikube_startup
 
 - name: Displaing minikube startup
