@@ -46,7 +46,7 @@
   become: false
   register: minikube_startup
 
-- name: Displaing minikube startup
+- name: Displaying minikube startup
   ansible.builtin.debug:
     var: minikube_startup.stdout
 ...
