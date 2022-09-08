@@ -209,7 +209,7 @@
     - name: Deploying pizza-express to the cluster
       ansible.builtin.shell: |
         set -o pipefail
-        kubectl apply -f /opt/pizza-express/pizza/templates
+        sudo -u vagrant kubectl apply -f /opt/pizza-express/pizza/templates
       args:
         executable: /bin/bash
         warn: false
